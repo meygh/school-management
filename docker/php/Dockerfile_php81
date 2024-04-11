@@ -1,0 +1,47 @@
+FROM php:8.1-fpm
+ARG TIMEZONE
+WORKDIR /var/www/api
+
+COPY config/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+#    vim \
+RUN apt-get update && apt-get install -y \
+    gnupg \
+    g++ \
+    procps \
+    netcat-traditional \
+    libpq-dev \
+    openssl \
+    curl \
+    git \
+    unzip \
+    zlib1g-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libjpeg-dev
+
+# Docker php ext installation
+RUN docker-php-ext-install mysqli pdo pdo_mysql zip gd intl opcache exif mbstring
+
+# Add xdebug
+RUN pecl install xdebug-3.2.1 \
+    redis
+
+# Docker php ext enable
+RUN docker-php-ext-enable mysqli pdo pdo_mysql redis sodium xdebug
+
+# Docker php ext configuration
+RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd && \
+    docker-php-ext-configure gd --with-jpeg --with-freetype
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/timezone \
+    && printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini \
+    && "date"
+
+# Install composer and copy to usr/local/bin in order to run within the terminal
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
