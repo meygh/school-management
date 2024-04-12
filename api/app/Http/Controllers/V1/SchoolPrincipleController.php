@@ -80,19 +80,27 @@ class SchoolPrincipleController extends BaseController
     }
 
     /**
-     * Display the specified School.
+     * Display the specified School by the given user id.
      *
-     * @param User $user
+     * @param User $userPrinciple
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(SchoolPrinciple $userPrinciple)
+    public function showByUserId(SchoolPrinciple $userPrinciple)
     {
-        if (!$userPrinciple) {
-            return $this->sendError('مدیر مدرسه مورد نظر یافت نشد!');
-        }
-
         return $this->sendResponse(new PrincipleResource($userPrinciple));
+    }
+
+    /**
+     * Display the specified School.
+     *
+     * @param SchoolPrinciple $principle
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(SchoolPrinciple $principle)
+    {
+        return $this->sendResponse(new PrincipleResource($principle));
     }
 
     /**

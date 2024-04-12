@@ -16,8 +16,8 @@ Route::middleware('auth:sanctum,can:admin')->group(function () {
         ->name('principle.assignSchool');
 
     // Show principle data base on given user id not principle id.
-    Route::get('principles/{userPrinciple}', [SchoolPrincipleController::class, 'show'])
-        ->name('principle.show');
+    Route::get('principles/user/{userPrinciple}', [SchoolPrincipleController::class, 'showByUserId'])
+        ->name('principle.showByUser');
 
     Route::apiResources([
         'schools' => SchoolController::class,
