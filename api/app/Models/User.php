@@ -4,9 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -61,6 +64,46 @@ class User extends Authenticatable
         'status' => UserStatus::class
     ];
 
+    protected function password(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => Hash::make($value),
+        );
+    }
+
+    /**
+     * Filter principle users.
+     * @param Builder $query
+     *
+     * @return void
+     */
+    public function scopePrinciples(Builder $query): void
+    {
+        $query->where('status', UserStatus::PRINCIPLE);
+    }
+
+    /**
+     * Filter teacher users.
+     * @param Builder $query
+     *
+     * @return void
+     */
+    public function scopeTeachers(Builder $query): void
+    {
+        $query->where('status', UserStatus::TEACHER);
+    }
+
+    /**
+     * Filter student users.
+     * @param Builder $query
+     *
+     * @return void
+     */
+    public function scopeStudents(Builder $query): void
+    {
+        $query->where('status', UserStatus::STUDENT);
+    }
+
     public function isActive(): bool
     {
         return !$this->isDisabled();
@@ -91,28 +134,9 @@ class User extends Authenticatable
         return $this->checkStatus(UserStatus::STUDENT);
     }
 
-    public function isProfileCompleted()
-    {
-        if ($this->isDisabled() || !$this->profile) {
-            return false;
-        }
-
-        return $this->profile?->isCompleted();
-    }
-
     public function getFullNameAttribute()
     {
         return $this->firstname . ' ' . $this->lastname;
-    }
-
-    public function profile()
-    {
-        return $this->hasOne(UserProfile::class, 'user_id', 'id');
-    }
-
-    public function setProfileAttribute($values)
-    {
-        $this->profile()->update($values);
     }
 
     protected function checkStatus(UserStatus $status): bool

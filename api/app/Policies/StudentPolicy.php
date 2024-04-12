@@ -33,10 +33,10 @@ class StudentPolicy
 
     protected function isAuthorized(User $user): Response
     {
-        if ($user->isProfileCompleted()) {
+        if ($user->isStudent()) {
             return Response::allow();
         }
 
-        return Response::deny('شما دسترسی لازم به این عملیات را ندارید!');
+        return Response::deny('شما دانش آموز نیستید!');
     }
 }

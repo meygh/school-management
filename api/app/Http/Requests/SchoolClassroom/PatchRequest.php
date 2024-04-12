@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Supervisor;
+namespace App\Http\Requests\SchoolClassroom;
 
 use App\Enums\Status;
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,13 +8,11 @@ use Illuminate\Validation\Rule;
 
 /**
  * Class PatchRequest
- * @package App\Http\Requests\SchoolStudent
+ * @package App\Http\Requests\SchoolClassroom
  *
  * Attributes:
  * @property int $id
  * @property int $school_id
- * @property int $user_id
- * @property array|null $params
  * @property int $status
  * @property int $created_by
  * @property int $updated_by
@@ -41,13 +39,8 @@ class PatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'school_id' => ['sometimes', 'nullable', 'int', 'exists:departments,id'],
-            'user_id' => ['required', 'nullable', 'int', 'exists:users,id',
-                Rule::unique('department_users')->where(function ($query) {
-                    return $query->where('school_id', request()->input('school_id') ?? $this->school_id)
-                        ->where('user_id', request()->input('user_id'));
-                })->ignore($this->id)],
-            'params' => ['sometimes', 'string', 'nullable'],
+            'school_id' => ['sometimes', 'required', 'nullable', 'int', 'exists:schools,id'],
+            'name' => ['required', 'string', 'max:150', 'unique:school_classrooms,name,' . $this->id],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)]
         ];
     }
@@ -56,20 +49,19 @@ class PatchRequest extends FormRequest
     {
         $this->merge([
             'status' => $this->status ?? Status::ACTIVE,
-            'params' => is_array($this->params) ? json_encode($this->params) : $this->params
         ]);
     }
 
     public function messages()
     {
         return [
-            'school_id' => 'دپارتمان انتخابی معتبر نیست',
+            'school_id.required' => 'انتخاب مدرسه الزامی است',
+            'school_id' => 'مدرسه انتخابی معتبر نیست',
 
-            'user_id.required' => 'انتخاب کاربر الزامی است',
-            'user_id.unique' => 'این کاربر قبلا مسئول این دپارتمان شده است',
-            'user_id' => 'کاربر انتخابی معتبر نیست',
+            'name.required' => 'نام مدرسه الزامی است',
+            'name.max' => 'حداکثر تعداد نویسه نام مدرسه ۱۵۰ عدد است',
+            'name.unique' => 'نام مدرسه باید منحصر به فرد باشد',
 
-            'params' => 'پارامترهای ارسال شده نامعتبر است',
             'status' => 'وضعیت ارسال شده نامعتبر است',
         ];
     }

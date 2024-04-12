@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Department;
+namespace App\Http\Requests\School;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * Attributes:
  * @property int $id
  * @property string $name
- * @property int|null $zone_id
+ * @property int|null $zone
  */
 class StoreRequest extends FormRequest
 {
@@ -31,20 +31,20 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:150', 'unique:departments,name'],
-            'zone_id' => ['sometimes', 'nullable', 'int', 'exists:zones,id'],
+            'name' => ['required', 'string', 'max:150', 'unique:schools,name'],
+            'zone' => ['required', 'int'],
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'نام دپارتمان الزامی است',
-            'name.max' => 'حداکثر تعداد نویسه نام دپارتمان ۱۵۰ عدد است',
-            'name.unique' => 'نام دپارتمان باید منحصر به فرد باشد',
+            'name.required' => 'نام مدرسه الزامی است',
+            'name.max' => 'حداکثر تعداد نویسه نام مدرسه ۱۵۰ عدد است',
+            'name.unique' => 'نام مدرسه باید منحصر به فرد باشد',
 
-            'zone_id' => 'منطقه انتخابی نامعتبر است',
-//            'zone_id.exists' => 'منطقه مورد نظر تعریف نشده است',
+            'zone.required' => 'تعیین منطقه مدرسه الزامی است',
+            'zone' => 'منطقه انتخابی نامعتبر است',
         ];
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\UserStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -24,11 +26,23 @@ class UpdateUserRequest extends FormRequest
         return [
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
-//            'username' => ['required', 'string', 'min:8', 'max:20', 'unique:users,username,' . $this->user->id],
+            'username' => ['required', 'string', 'min:8', 'max:20', 'unique:users,username,' . $this->user->id],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $this->user->id],
 
             'password' => 'required|confirmed|min:8', // Should match with password_confirmation
+
+            'status' => ['sometimes', 'nullable', 'int', Rule::enum(UserStatus::class)]
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        // Set user as student if didn't set
+        if (is_null($this->status)) {
+            $this->merge([
+                'status' => UserStatus::VISITOR->value,
+            ]);
+        }
     }
 
     public function messages()
@@ -39,18 +53,17 @@ class UpdateUserRequest extends FormRequest
 
             'email.required' => 'وارد کردن یک ایمیل معتبر الزامی است',
             'email.email' => 'ایمیل وارد شده معتبر نیست',
-            'email.unique' => 'این ایمیل قبل در سامانه ثبت شده است',
+            'email.unique' => 'این ایمیل قبلا ثبت شده، اگر اطلاعات ورود خود را فراموش کردید می توانید آن را بازیابی کنید',
 
             'username.required' => 'لطفا یک نام کاربری مناسب بین ۸ تا ۲۰ نویسه وارد کنید',
             'username.unique' => 'نام کاربری شما قبلا در این سامانه انتخاب شده لطفا نام دیگری وارد کنید',
             'username.min' => 'نام کاربری باید حداقل ۸ نویسه باشد',
             'username.max' => 'نام کاربری نباید بیشتر از ۲۰ نویسه باشد',
+            'username.regex' => 'نام کاربری فقط میتواند شامل حروف، اعداد و - باشد',
 
             'password.required' => 'تعیین گذرواژه الزامی است',
             'password.min' => 'گذرواژه باید حداقل ۸ نویسه باشد',
-
-            'profile.national_code' => 'لطفا کد ملی را به درستی وارد کنید',
-            'profile.mobile' => 'شماره موبایل را به درستی در قالب 09121234567',
+            'password.confirmed' => 'تایید گذرواژه با گذرواژه یکسان نیست',
         ];
     }
 }

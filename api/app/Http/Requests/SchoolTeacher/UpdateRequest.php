@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Supervisor;
+namespace App\Http\Requests\SchoolTeacher;
 
 use App\Enums\Status;
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,13 +8,13 @@ use Illuminate\Validation\Rule;
 
 /**
  * Class UpdateRequest
- * @package App\Http\Requests\SchoolStudent
+ * @package App\Http\Requests\SchoolTeacher
  *
  * Attributes:
  * @property int $id
  * @property int $school_id
+ * @property int $classroom_id
  * @property int $user_id
- * @property array|null $params
  * @property int $status
  * @property int $created_by
  * @property int $updated_by
@@ -41,13 +41,13 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'school_id' => ['sometimes', 'nullable', 'int', 'exists:departments,id'],
+            'school_id' => ['sometimes', 'required', 'nullable', 'int', 'exists:schools,id'],
+            'classroom_id' => ['required', 'nullable', 'int', 'exists:school_classrooms,id'],
             'user_id' => ['required', 'nullable', 'int', 'exists:users,id',
-                Rule::unique('department_users')->where(function ($query) {
-                    return $query->where('school_id', request()->input('school_id') ?? $this->school_id)
+                Rule::unique('school_students')->where(function ($query) {
+                    return $query->where('school_classrooms', request()->input('school_classrooms'))
                         ->where('user_id', request()->input('user_id'));
                 })->ignore($this->id)],
-            'params' => ['sometimes', 'string', 'nullable'],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)]
         ];
     }
@@ -56,20 +56,22 @@ class UpdateRequest extends FormRequest
     {
         $this->merge([
             'status' => $this->status ?? Status::ACTIVE,
-            'params' => is_array($this->params) ? json_encode($this->params) : $this->params
         ]);
     }
 
     public function messages()
     {
         return [
-            'school_id' => 'دپارتمان انتخابی معتبر نیست',
+            'school_id.required' => 'انتخاب مدرسه الزامی است',
+            'school_id' => 'مدرسه انتخابی معتبر نیست',
+
+            'classroom_id.required' => 'انتخاب کلاس الزامی است',
+            'classroom_id' => 'کلاس انتخابی معتبر نیست',
 
             'user_id.required' => 'انتخاب کاربر الزامی است',
             'user_id' => 'کاربر انتخابی معتبر نیست',
-            'user_id.unique' => 'این کاربر قبلا مسئول این دپارتمان شده است',
+            'user_id.unique' => 'این کاربر قبلا معلم این کلاس شده است',
 
-            'params' => 'پارامترهای ارسال شده نامعتبر است',
             'status' => 'وضعیت ارسال شده نامعتبر است',
         ];
     }

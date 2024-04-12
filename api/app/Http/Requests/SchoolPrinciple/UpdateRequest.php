@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Requests\DepartmentUser;
+namespace App\Http\Requests\SchoolPrinciple;
 
 use App\Enums\Status;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Class StoreRequest
- * @package App\Http\Requests\DepartmentUsers
+ * Class UpdateRequest
+ * @package App\Http\Requests\SchoolPrinciple
  *
  * Attributes:
  * @property int $id
  * @property int $school_id
  * @property int $user_id
- * @property array|null $params
  * @property int $status
  * @property int $created_by
  * @property int $updated_by
@@ -23,7 +22,7 @@ use Illuminate\Validation\Rule;
  * @property string $updated_at
  * @property string $deleted_at
  */
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -41,36 +40,26 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'school_id' => ['required', 'nullable', 'int', 'exists:departments,id'],
+            'school_id' => ['sometimes', 'required', 'nullable', 'int', 'exists:schools,id'],
             'user_id' => ['required', 'nullable', 'int', 'exists:users,id',
-                Rule::unique('department_users')->where(function ($query) {
-                    return $query->where('school_id', request()->input('school_id'))
+                Rule::unique('school_principles')->where(function ($query) {
+                    return $query->where('school_id', request()->input('school_id') ?? $this->school_id)
                         ->where('user_id', request()->input('user_id'));
-                })],
-            'params' => ['sometimes', 'string', 'nullable'],
-            'status' => ['sometimes', 'nullable', Rule::enum(Status::class)],
+                })->ignore($this->id)],
+            'status' => ['sometimes', 'required', Rule::enum(Status::class)],
         ];
-    }
-
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'status' => $this->status ?? 1,
-            'params' => is_array($this->params) ? json_encode($this->params) : $this->params
-        ]);
     }
 
     public function messages()
     {
         return [
-            'school_id.required' => 'انتخاب دپارتمان الزامی است',
-            'school_id' => 'دپارتمان انتخابی معتبر نیست',
+            'school_id.required' => 'انتخاب مدرسه الزامی است',
+            'school_id' => 'مدرسه انتخابی معتبر نیست',
 
             'user_id.required' => 'انتخاب کاربر الزامی است',
             'user_id' => 'کاربر انتخابی معتبر نیست',
-            'user_id.unique' => 'این کاربر قبلا مسئول این دپارتمان شده است',
+            'user_id.unique' => 'این کاربر قبلا مسئول این مدرسه شده است',
 
-            'params' => 'پارامترهای ارسال شده نامعتبر است',
             'status' => 'وضعیت ارسال شده نامعتبر است',
         ];
     }

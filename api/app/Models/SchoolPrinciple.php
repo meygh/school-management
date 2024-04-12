@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class SchoolPrinciple
@@ -41,9 +43,53 @@ class SchoolPrinciple extends Model
         'status' => Status::class,
     ];
 
+    /**
+     * Assign pear to pear school and principle.
+     * every school can be assigned only to one principle.
+     * @return SchoolPrinciple|$this|null
+     */
+    public function assignSchool(): ?SchoolPrinciple
+    {
+        if (!$this->school_id || !$this->user_id) {
+            return null;
+        }
+        DB::beginTransaction();
+
+        try {
+            // Detach all current schools of the given principle.
+            self::where('user_id', $this->user_id)->delete();
+
+            if ($this->save()) {
+                DB::commit();
+
+                return $this;
+            }
+        } catch (\Exception $e) {}
+
+        DB::rollBack();
+
+        return null;
+    }
+
+    /**
+     * Returns current active school.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function school()
     {
         return $this->belongsTo(School::class, 'school_id', 'id');
+    }
+
+    /**
+     * Returns list of previous schools if has any.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function prevSchools()
+    {
+        return $this->belongsTo(School::class, 'school_id', 'id')
+            ->where('status', Status::INACTIVE);
     }
 
     public function user()

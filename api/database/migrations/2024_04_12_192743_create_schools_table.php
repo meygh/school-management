@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('schools', function (Blueprint $table) {
             $table->id();
             $table->string('name', 150)->unique();
-            $table->unsignedSmallInteger('zone_id');
+            $table->unsignedSmallInteger('zone');
 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')

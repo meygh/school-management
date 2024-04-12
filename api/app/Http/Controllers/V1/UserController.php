@@ -20,12 +20,7 @@ class UserController extends BaseController
      */
     public function index(Request $request)
     {
-        /*$per_page = (int) $request->get('per_page', 10);
-        if (!$per_page) {
-            $per_page = 10;
-        }*/
-
-        $users = User::with('profile')->paginate(10);
+        $users = User::paginate();
 
         return UserResource::collection($users);
     }
@@ -52,14 +47,10 @@ class UserController extends BaseController
     public function store(StoreUserRequest $request)
     {
         $result = false;
-        $user = User::create($request->except('profile'));
+        $user = User::create($request->validated());
 
         if (!$user) {
             return $this->sendError('ایجاد اطلاعات کاربر با خطا مواجه شد!');
-        }
-
-        if ($user_profile_attrs = $request->get('profile')) {
-            $result = $user->profile()->update($user_profile_attrs);
         }
 
         if ($result) {
@@ -78,8 +69,6 @@ class UserController extends BaseController
      */
     public function show(User $user)
     {
-        $user->load('profile');
-
         return new UserResource($user);
     }
 
@@ -97,15 +86,7 @@ class UserController extends BaseController
             return $this->sendError('کاربر مورد نظر یافت نشد!');
         }
 
-        $result = false;
-
-        if ($user_attrs = $request->except('profile')) {
-            $result = $user->update($user_attrs);
-        }
-
-        if ($user_profile_attrs = $request->get('profile')) {
-            $result = $user->profile()->update($user_profile_attrs);
-        }
+        $result = $user->update($request->validated());
 
         if ($result) {
             return $this->sendResponse(new UserResource($user), 'کاربر ویرایش شد.');

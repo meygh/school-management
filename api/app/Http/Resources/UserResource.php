@@ -21,8 +21,6 @@ class UserResource extends JsonResource
             'firstName' => $this->firstname,
             'lastName' => $this->lastname,
             'fullName' => "{$this->firstname} {$this->lastname}",
-            
-            'profile' => new UserProfileResource($this->whenLoaded("profile"))
         ];
     }
 }

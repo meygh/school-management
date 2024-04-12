@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\UserStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -24,15 +26,23 @@ class StoreUserRequest extends FormRequest
         return [
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
-            'username' => ['required', 'string', 'regex:/^[a-zA-Z0-9]+$/', 'min:8', 'max:20', 'unique:users'],
+            'username' => ['required', 'string', 'regex:/^[a-zA-Z0-9\-]+$/', 'min:8', 'max:20', 'unique:users'],
             'email' => ['required', 'email', 'max:255', 'unique:users'],
 
             'password' => 'required|confirmed|min:8', // Should match with password_confirmation
 
-            /** User Profile */
-            'profile.national_code' => ['required', 'regex:/(0)[0-9]{9}/'],
-            'profile.mobile' => ['required', 'regex:/(09)[0-9]{9}/'],
+            'status' => ['sometimes', 'nullable', 'int', Rule::enum(UserStatus::class)]
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        // Set user as student if didn't set
+        if (is_null($this->status)) {
+            $this->merge([
+                'status' => UserStatus::VISITOR->value,
+            ]);
+        }
     }
 
     public function messages()
@@ -49,12 +59,11 @@ class StoreUserRequest extends FormRequest
             'username.unique' => 'نام کاربری شما قبلا در این سامانه انتخاب شده لطفا نام دیگری وارد کنید',
             'username.min' => 'نام کاربری باید حداقل ۸ نویسه باشد',
             'username.max' => 'نام کاربری نباید بیشتر از ۲۰ نویسه باشد',
+            'username.regex' => 'نام کاربری فقط میتواند شامل حروف، اعداد و - باشد',
 
             'password.required' => 'تعیین گذرواژه الزامی است',
             'password.min' => 'گذرواژه باید حداقل ۸ نویسه باشد',
-
-            'profile.national_code' => 'لطفا کد ملی را به درستی وارد کنید',
-            'profile.mobile' => 'شماره موبایل را به درستی در قالب 09121234567',
+            'password.confirmed' => 'تایید گذرواژه با گذرواژه یکسان نیست',
         ];
     }
 }

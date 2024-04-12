@@ -33,7 +33,7 @@ class PrinciplePolicy
 
     protected function isAuthorized(User $user): Response
     {
-        if ($user->isDepartmentExpert()) {
+        if ($user->isPrinciple()) {
             return Response::allow();
         }
 
