@@ -2,76 +2,57 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
 use App\Traits\CreatedUpdatedBy;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class UserProfile
+ * Class SchoolStudent
  * @package App\Models
  *
  * Attributes:
+ * @property int $id
+ * @property int $school_id
+ * @property int $classroom_id
  * @property int $user_id
- * @property ?string $national_code
- * @property ?string $mobile
- * @property ?string $phone
- * @property ?string $address
- * @property ?string $zipcode
  * @property int $status
- *
  * @property int $created_by
  * @property int $updated_by
  * @property int $deleted_by
  * @property string $created_at
  * @property string $updated_at
  * @property string $deleted_at
+ *
+ * Relations:
+ * @property School $school
+ * @property SchoolClassroom $classroom
+ * @property User $user
  */
-class UserProfile extends Model
+class SchoolTeacher extends Model
 {
     use HasFactory, HasTimestamps, CreatedUpdatedBy;
 
-    protected $table = 'user_profiles';
+    protected $with = ['school', 'classroom', 'user'];
 
-    protected $with = ['user'];
+    protected $fillable = ['school_id', 'classroom_id', 'user_id', 'status'];
 
-    protected $fillable = [
-        'user_id',
-        'national_code',
-        'mobile',
-        'phone',
-        'address',
-        'zipcode',
-        'cv',
-    ];
-
-    protected $requiredFields = [
-        'national_code',
-        'mobile',
-        'address',
-        'zipcode',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @property array<string, string>
-     */
-    protected $casts = [
+    public $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'status' => Status::class,
     ];
 
-    public function isCompleted(): bool
+    public function school()
     {
-        foreach ($this->requiredFields as $field) {
-            if (!$this->{$field}) {
-                return false;
-            }
-        }
+        return $this->belongsTo(School::class, 'school_id', 'id');
+    }
 
-        return true;
+    public function classroom()
+    {
+        return $this->belongsTo(SchoolClassroom::class, 'school_id', 'id');
     }
 
     public function user()

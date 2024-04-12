@@ -10,6 +10,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -26,16 +27,15 @@ class AuthenticateController extends BaseController
     public function login(LoginRequest $request)
     {
         $request->authenticate();
-    
+
+        /** @var User $user */
         $user = Auth::user();
-    
-        
         $response['user'] = new UserResource($user);
-        $response['token'] = $user->createToken("{$user->name}App")->plainTextToken;
-    
+        $response['token'] = $user->createToken("{$user->username}App")->plainTextToken;
+
         return $this->sendResponse($response);
     }
-    
+
     /**
      * Destroy an authenticated session.
      *
@@ -45,12 +45,8 @@ class AuthenticateController extends BaseController
      */
     public function destroy(Request $request): Response
     {
-        Auth::guard('web')->logout();
         $request->user()->currentAccessToken()?->delete();
-        
-//        $request->session()->invalidate();
-//        $request->session()->regenerateToken();
-        
+
         return response('', 204);
     }
 }

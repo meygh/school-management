@@ -6,7 +6,7 @@ return [
     'Active' => 'فعال',
 
     'Visitor' => 'مهمان',
-    'Student' => 'دانش آموز',
+    'SchoolStudent' => 'دانش آموز',
     'Teacher' => 'معلم',
     'Principle' => 'مدیر مدرسه',
     'Admin' => 'مدیر',

@@ -12,7 +12,7 @@
 This is a simple api project to produce some basic facilities to manage a school environment including the following features.
 
 - RBAC infrastructure to manage user roles
-- There are four roles: Admin, Principle, Teacher and Student
+- There are four roles: Admin, Principle, Teacher and SchoolStudent
 - API tests
 - Dockerized using Docker Compose
 - Project using MySql as a relational database

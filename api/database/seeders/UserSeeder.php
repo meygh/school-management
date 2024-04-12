@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
 
         $username = 'principle';
 
-        for ($i = 0; $i <= 3; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             User::create([
                 'firstname' => fake()->firstName(),
                 'lastname' => fake()->lastName(),
@@ -39,12 +39,12 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'status' => UserStatus::PRINCIPLE,
             ]);
-            $username .= '_' . $i + 1;
+            $username = 'principle_' . $i;
         }
 
         $username = 'teacher';
 
-        for ($i = 0; $i <= 3; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             User::create([
                 'firstname' => fake()->firstName(),
                 'lastname' => fake()->lastName(),
@@ -55,12 +55,12 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'status' => UserStatus::TEACHER,
             ]);
-            $username .= '_' . $i + 1;
+            $username = 'teacher_' . $i;
         }
 
         $username = 'student';
 
-        for ($i = 0; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             User::create([
                 'firstname' => fake()->firstName(),
                 'lastname' => fake()->lastName(),
@@ -71,7 +71,7 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'status' => UserStatus::STUDENT,
             ]);
-            $username .= '_' . $i + 1;
+            $username = 'student_' . $i;
         }
     }
 }

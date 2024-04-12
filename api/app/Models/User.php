@@ -3,7 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Enums\Status;
+use App\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -58,17 +58,37 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'status' => Status::class
+        'status' => UserStatus::class
     ];
 
-    public function isAcitvated(): bool
+    public function isActive(): bool
     {
-        return $this->checkStatus();
+        return !$this->isDisabled();
     }
 
     public function isDisabled(): bool
     {
-        return $this->checkStatus(Status::INACTIVE);
+        return $this->checkStatus(UserStatus::INACTIVE);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->checkStatus(UserStatus::ADMIN);
+    }
+
+    public function isPrinciple(): bool
+    {
+        return $this->checkStatus(UserStatus::PRINCIPLE);
+    }
+
+    public function isTeacher(): bool
+    {
+        return $this->checkStatus(UserStatus::TEACHER);
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->checkStatus(UserStatus::STUDENT);
     }
 
     public function isProfileCompleted()
@@ -95,7 +115,7 @@ class User extends Authenticatable
         $this->profile()->update($values);
     }
 
-    protected function checkStatus(Status $status = Status::ACTIVE): bool
+    protected function checkStatus(UserStatus $status): bool
     {
         return $this->status === $status->value;
     }

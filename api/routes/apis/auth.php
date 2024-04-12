@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\V1\AuthenticateController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,21 +35,19 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
-        return new \App\Http\Resources\UserResource($request->user());
-    });
+        return new UserResource($request->user());
+    })->name('user.info');
 
-    /*Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
-//        ->middleware(['auth', 'signed', 'throttle:6,1'])
+    Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class])
+        ->middleware(['throttle:6,1'])
         ->name('verification.verify');
+
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware(['throttle:6,1'])
-        ->name('verification.send');*/
+        ->name('verification.send');
 
     Route::put('/profile', [ProfileController::class, 'update'])
         ->name('profile');
-
-    Route::put('/change-avatar', [ProfileController::class, 'updateAvatar'])
-        ->name('changeAvatar');
 
     Route::post('/logout', [AuthenticateController::class, 'destroy'])
         ->name('logout');

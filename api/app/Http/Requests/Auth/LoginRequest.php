@@ -4,10 +4,10 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
@@ -41,17 +41,22 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->boolean('remember')) ||
-            Auth::attempt(['username' => $this->email, 'password' => $this->password], $this->boolean('remember'))) {
+        if (
+            Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->boolean('remember')) ||
+            Auth::attempt(['username' => $this->email, 'password' => $this->password], $this->boolean('remember'))
+        ) {
             RateLimiter::clear($this->throttleKey());
+
             return;
         }
-
         RateLimiter::hit($this->throttleKey());
 
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
+        throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => __('auth.failed'),
+            ], 422)
+        );
     }
 
     /**
@@ -66,15 +71,17 @@ class LoginRequest extends FormRequest
         }
 
         event(new Lockout($this));
-
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+        throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => __('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
+            ], 400)
+        );
     }
 
     /**
@@ -82,14 +89,16 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+        return Str::transliterate(
+            Str::lower($this->input('email')) . '|' . $this->ip()
+        );
     }
 
     public function messages()
     {
         return [
-            'email.required' => 'فیلد ایمیل ضروری است',
-            'email.email' => 'مقدار فیلد ایمیل باید یک آدرس ایمیل معتبر باشد.',
+            'email.required' => 'ایمیل یا نام کاربری الزامی است',
+//            'email.email' => 'مقدار فیلد ایمیل باید یک آدرس ایمیل معتبر باشد.',
             'password.required' => 'فیلد گذرواژه ضروری است',
         ];
     }

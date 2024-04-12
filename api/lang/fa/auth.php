@@ -12,9 +12,8 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'Unauthenticated.' => 'احراز هویت نشده.',
     'failed' => 'اطلاعات ورود نامعتبر است.',
     'password' => 'گذرواژه ارائه شده نادرست است.',
     'throttle' => 'درخواست ورود بیش از حد داشتید. لطفا :seconds ثانیه دیگر تلاش کنید.',
-
 ];
