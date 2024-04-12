@@ -82,13 +82,17 @@ class SchoolPrincipleController extends BaseController
     /**
      * Display the specified School.
      *
-     * @param SchoolPrinciple $principle
+     * @param User $user
      *
-     * @return PrincipleResource
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(SchoolPrinciple $principle)
+    public function show(SchoolPrinciple $userPrinciple)
     {
-        return new PrincipleResource($principle);
+        if (!$userPrinciple) {
+            return $this->sendError('مدیر مدرسه مورد نظر یافت نشد!');
+        }
+
+        return $this->sendResponse(new PrincipleResource($userPrinciple));
     }
 
     /**
