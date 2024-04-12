@@ -76,5 +76,6 @@ class Kernel extends HttpKernel
     ];
 
     protected $routeMiddleware = [
+        'api.version' => \App\Http\Middleware\APIVersion::class
     ];
 }

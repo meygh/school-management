@@ -18,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/dashboard';
-    
+
     /** @var string $apiNamespace */
     protected $apiNamespace ='App\Http\Controllers';
 
@@ -28,35 +28,27 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {
-//            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
         $this->routes(function () {
             $latest_api_version = config('app.api_latest');
-            
+
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
-    
+
             // Latest API Version
             Route::prefix('api/latest')
                 ->middleware(['api', "api.version:v{$latest_api_version}"])
                 ->namespace("{$this->apiNamespace}\V{$latest_api_version}")
                 ->group(base_path("routes/api_v{$latest_api_version}.php"));
-    
+
             // API Version 1
             Route::prefix('api/v1')
                 ->middleware(['api', 'api.version:v1'])
                 ->namespace("{$this->apiNamespace}\V1")
                 ->group(base_path('routes/api_v1.php'));
-    
-            /*Route::group([
-                'middleware' => ['api', 'api_version:v1'],
-                'namespace'  => "{$this->apiNamespace}\V1",
-                'prefix'     => 'api/v1',
-            ], function (\Illuminate\Routing\Router $router) {
-                require base_path('routes/api_v1.php');
-            });*/
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

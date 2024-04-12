@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mariadb:
-    container_name: mariadb-rasad
+    container_name: mariadb-minikala
     restart: on-failure
     build: ./docker/mariadb
     environment:
@@ -17,7 +17,7 @@ services:
       - MiniKala
 
   php:
-    container_name: php-rasad
+    container_name: php-minikala
     restart: on-failure
     build:
       context: ./docker/php
@@ -37,7 +37,7 @@ services:
       - MiniKala
 
   nginx:
-    container_name: nginx-rasad
+    container_name: nginx-minikala
     restart: on-failure
     build:
       context: ./docker/nginx
@@ -56,7 +56,7 @@ services:
       - MiniKala
 
   phpmyadmin:
-    container_name: phpmyadmin-rasad
+    container_name: phpmyadmin-minikala
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOSTS: mariadb,docker.for.mac.localhost
