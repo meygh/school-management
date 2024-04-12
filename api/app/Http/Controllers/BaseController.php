@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers;
 
-
 class BaseController extends Controller
 {
     /**
@@ -23,7 +22,6 @@ class BaseController extends Controller
     public function sendResponse($result, string $message = '', $status_code = 200)
     {
         $response = [
-            'status' => true,
             'data' => $result
         ];
 
@@ -46,8 +44,10 @@ class BaseController extends Controller
     public function sendError(string $error, array $errorMessages = [], int $code = 404)
     {
         $response = [
-            'status' => false,
             'message' => $error,
+            'errors' => [
+                $error
+            ]
         ];
 
         if($errorMessages){
