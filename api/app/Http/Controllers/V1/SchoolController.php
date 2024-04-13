@@ -7,7 +7,7 @@ use App\Http\Requests\School\PatchRequest;
 use App\Http\Requests\School\StoreRequest;
 use App\Models\School;
 use Illuminate\Http\Request;
-use App\Http\Resources\PrincipleResource;
+use App\Http\Resources\SchoolResource;
 
 class SchoolController extends BaseController
 {
@@ -20,9 +20,9 @@ class SchoolController extends BaseController
      */
     public function index(Request $request)
     {
-        $schools = School::paginate();
+        $schools = School::with('principle')->paginate();
 
-        return PrincipleResource::collection($schools);
+        return SchoolResource::collection($schools);
     }
 
     /**
@@ -37,7 +37,7 @@ class SchoolController extends BaseController
         $school = School::create($request->validated());
 
         return $this->sendResponse(
-            new PrincipleResource($school),
+            new SchoolResource($school),
             "مدرسه {$school->name} با موفقیت افزوده شد",
             201
         );
@@ -48,11 +48,11 @@ class SchoolController extends BaseController
      *
      * @param School $school
      *
-     * @return PrincipleResource
+     * @return SchoolResource
      */
     public function show(School $school)
     {
-        return new PrincipleResource($school);
+        return new SchoolResource($school);
     }
 
     /**
@@ -61,7 +61,7 @@ class SchoolController extends BaseController
      * @param PatchRequest $request
      * @param School $school
      *
-     * @return PrincipleResource|\Illuminate\Http\JsonResponse
+     * @return SchoolResource|\Illuminate\Http\JsonResponse
      */
     public function update(PatchRequest $request, School $school)
     {
@@ -72,7 +72,7 @@ class SchoolController extends BaseController
         $school->update($request->validated());
 
         return $this->sendResponse(
-            new PrincipleResource($school),
+            new SchoolResource($school),
             "مدرسه {$school->name} با موفقیت ویرایش شد",
             204
         );

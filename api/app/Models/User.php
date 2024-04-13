@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Status;
 use App\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -139,8 +140,25 @@ class User extends Authenticatable
         return $this->firstname . ' ' . $this->lastname;
     }
 
+    public function principle()
+    {
+        return $this->hasOne(SchoolPrinciple::class, 'user_id');
+    }
+
+    public function teacher()
+    {
+        return $this->hasOne(SchoolTeacher::class, 'user_id')
+            ->where('status', Status::ACTIVE);
+    }
+
+    public function student()
+    {
+        return $this->hasOne(SchoolStudent::class, 'user_id')
+            ->where('status', Status::ACTIVE);
+    }
+
     protected function checkStatus(UserStatus $status): bool
     {
-        return $this->status === $status->value;
+        return $this->status == $status;
     }
 }

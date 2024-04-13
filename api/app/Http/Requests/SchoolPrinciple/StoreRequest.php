@@ -63,8 +63,8 @@ class StoreRequest extends FormRequest
             $this->merge(['school_id' => $this->school->id]);
         }
 
-        if (!$this->user_id  && $this?->user) {
-            $this->merge(['user_id' => $this->user->id]);
+        if (!$this->user_id  && $this?->userPrinciple) {
+            $this->merge(['user_id' => $this->userPrinciple->id]);
         }
     }
 

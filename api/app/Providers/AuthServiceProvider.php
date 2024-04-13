@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Enums\UserStatus;
+use App\Models\School;
+use App\Models\SchoolClassroom;
 use App\Models\User;
 use App\Policies\AdminPolicy;
 use App\Policies\StudentPolicy;
@@ -38,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-        $deny_access_msg = __('ِYou are not allowed to perform this action!');
+        $deny_access_msg = __('messages.ِYou are not allowed to perform this action!');
         ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
             return config('app.url') . "/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
         });
@@ -47,6 +49,36 @@ class AuthServiceProvider extends ServiceProvider
             'admin',
             function (User $user, Model $model = null) use ($deny_access_msg) {
                 if ($user->isAdmin()) {
+                    return Response::allow();
+                }
+
+                return Response::deny($deny_access_msg);
+            }
+        );
+
+        Gate::define(
+            'principle',
+            function (User $user, Model $model = null) use ($deny_access_msg) {
+                if ($user->isPrinciple() && ($principle = $user->principle)) {
+                    if ($model?->school_id && $model->school_id != $principle->school_id) {
+                        return Response::deny($deny_access_msg);
+                    }
+
+                    return Response::allow();
+                }
+
+                return Response::deny($deny_access_msg);
+            }
+        );
+
+        Gate::define(
+            'teacher',
+            function (User $user, Model $model = null) use ($deny_access_msg) {
+                if ($user->isTeacher() && ($teacher = $user->teacher)) {
+                    if ($model?->classroom_id && $model->classroom_id != $teacher->classroom_id) {
+                        return Response::deny($deny_access_msg);
+                    }
+
                     return Response::allow();
                 }
 
@@ -90,7 +122,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define(
             'manage-teachers',
             function (User $user, Model $model = null) use ($deny_access_msg) {
-                if ($user->isPrinciple()) {
+                if ($user->isPrinciple() && ($principle = $user->principle)) {
+                    if ($model?->school_id && $model->school_id != $principle->school_id) {
+                        return Response::deny($deny_access_msg);
+                    }
+
                     return Response::allow();
                 }
 
@@ -99,9 +135,36 @@ class AuthServiceProvider extends ServiceProvider
         );
 
         Gate::define(
-            'manage-students',
-            function (User $user, Model $model = null) use ($deny_access_msg) {
-                if ($user->isPrinciple() || $user->isTeacher()) {
+            'school-principle',
+            function (User $user, School $school = null) use ($deny_access_msg) {
+                if ($user->isPrinciple() && ($principle = $user->principle)) {
+                    if ($school && $school->id != $principle->school_id) {
+                        return Response::deny($deny_access_msg);
+                    }
+
+                    return Response::allow();
+                }
+
+                return Response::deny($deny_access_msg);
+            }
+        );
+
+        Gate::define(
+            'owned-classroom',
+            function (User $user, SchoolClassroom $classroom = null) use ($deny_access_msg) {
+                if ($user->isPrinciple() && ($principle = $user->principle)) {
+                    if ($classroom && $classroom->school_id != $principle->school_id) {
+                        return Response::deny($deny_access_msg);
+                    }
+
+                    return Response::allow();
+                }
+
+                if ($user->isTeacher() && ($teacher = $user->teacher)) {
+                    if ($classroom && $classroom->id != $teacher->classroom_id) {
+                        return Response::deny($deny_access_msg);
+                    }
+
                     return Response::allow();
                 }
 

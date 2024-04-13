@@ -45,7 +45,7 @@ class StoreRequest extends FormRequest
             'classroom_id' => ['required', 'nullable', 'int', 'exists:school_classrooms,id'],
             'user_id' => ['required', 'nullable', 'int', 'exists:users,id',
                 Rule::unique('school_students')->where(function ($query) {
-                    return $query->where('school_classrooms', request()->input('school_classrooms'))
+                    return $query->where('classroom_id', request()->input('classroom_id'))
                         ->where('user_id', request()->input('user_id'));
                 })],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)],
@@ -54,9 +54,29 @@ class StoreRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'status' => $this->status ?? Status::ACTIVE,
-        ]);
+        if ((!$this->school_id || !$this->classroom_id)  && $this?->classroom) {
+            $this->merge([
+                'school_id' => $this->classroom->school_id,
+                'classroom_id' => $this->classroom->id
+            ]);
+        }
+
+        if (!$this->user_id && $this?->userStudent) {
+            $user_id = $this->userStudent->id;
+
+            if (!$this->userStudent->isStudent()) {
+                $user_id = 'invalid';
+            }
+
+            $this->merge(['user_id' => $user_id]);
+        }
+
+        // Set principle status active if didn't set
+        if (is_null($this->status)) {
+            $this->merge([
+                'status' => Status::ACTIVE->value,
+            ]);
+        }
     }
 
     public function messages()

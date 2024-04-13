@@ -36,7 +36,7 @@ class SchoolStudent extends Model
 
     protected $with = ['classroom', 'user'];
 
-    protected $fillable = ['classroom_id', 'user_id', 'status'];
+    protected $fillable = ['school_id', 'classroom_id', 'user_id', 'status'];
 
     public $casts = [
         'created_at' => 'datetime',
@@ -45,6 +45,48 @@ class SchoolStudent extends Model
         'status' => Status::class,
     ];
 
+    /**
+     * Assign pear to pear school classrooms with teachers.
+     * every classroom can be assigned only to one particular teacher.
+     *
+     * @return ?SchoolStudent
+     */
+    public function assignClassroom(): ?SchoolStudent
+    {
+        if ((!$this->school_id && !$this->classroom_id) || !$this->user_id) {
+            return null;
+        }
+
+        /**
+         * Retrieve current teacher for the given classroom.
+         * @var ?SchoolStudent $teacher
+         */
+        $classroomStudent = self::where([
+            'classroom_id' => $this->classroom_id,
+            'user_id' => $this->user_id,
+        ])->first();
+
+        if ($classroomStudent) {
+            if (!$classroomStudent->isActive()) {
+                $classroomStudent->update(['status' => Status::ACTIVE]);
+            }
+
+            return $classroomStudent;
+        }
+
+
+        if ($this->save()) {
+            return $this;
+        }
+
+        return null;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status == Status::ACTIVE;
+    }
+
     public function school()
     {
         return $this->belongsTo(School::class, 'school_id', 'id');
@@ -52,7 +94,7 @@ class SchoolStudent extends Model
 
     public function classroom()
     {
-        return $this->belongsTo(SchoolClassroom::class, 'school_id', 'id');
+        return $this->belongsTo(SchoolClassroom::class, 'classroom_id', 'id');
     }
 
     public function user()

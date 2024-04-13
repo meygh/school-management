@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\SchoolPrinciple;
+use App\Models\SchoolStudent;
+use App\Models\SchoolTeacher;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -55,8 +58,19 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
+        // Will use to find SchoolPrinciple by user id
         Route::bind('userPrinciple', function ($value) {
-            return SchoolPrinciple::where('user_id', $value)->first();
+            return User::where('id', $value)->principles()->first();
+        });
+
+        // Will use to find SchoolTeacher by user id
+        Route::bind('userTeacher', function ($value) {
+            return User::where('id', $value)->teachers()->first();
+        });
+
+        // Will use to find SchoolStudent by user id
+        Route::bind('userStudent', function ($value) {
+            return User::where('id', $value)->students()->first();
         });
     }
 }

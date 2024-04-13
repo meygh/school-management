@@ -33,7 +33,7 @@ class School extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['zone', 'name'];
+    protected $fillable = ['zone', 'name', 'status'];
 
     public $casts = [
         'created_at' => 'datetime',

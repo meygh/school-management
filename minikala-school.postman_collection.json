@@ -1,0 +1,1323 @@
+{
+	"info": {
+		"_postman_id": "95893050-228e-439e-81e5-ab181a51feaf",
+		"name": "minikala-school",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin\",\n    \"password\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{api_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/logout",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{api_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/user",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{api_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/users",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Access",
+			"item": [
+				{
+					"name": "Schools",
+					"item": [
+						{
+							"name": "Schools List",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/schools",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"مدرسه صادقیه   \",\n    \"zone\": 3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/schools",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"zone\": 5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/schools/4",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/schools/4",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/schools/5",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Classrooms",
+					"item": [
+						{
+							"name": "School Classrooms List",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/schools/1/classrooms",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"1",
+										"classrooms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Classroom to School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"کلاس فوق العاده ۳\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/schools/1/classrooms",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"1",
+										"classrooms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"zone\": 5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/schools/4",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/schools/4",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/schools/5",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"schools",
+										"5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Principles",
+					"item": [
+						{
+							"name": "Principle Users List",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create School Principle User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstname\": \"میثم\",\n    \"lastname\": \"قنبری\",\n    \"username\": \"meisam-gh\",\n    \"email\": \"meisam.ghanbari.pro@gmail.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\": \"12345678\",\n    \"profile\": {\n        \"national_code\": \"0470309498\",\n        \"mobile\": \"09197478620\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/principles",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Assign Principle to School",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles/18/assign-school/1",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles",
+										"18",
+										"assign-school",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Principle",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles/12",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Principle by User ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles/user/18",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles",
+										"user",
+										"18"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Principle",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles/11",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles",
+										"11"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Principle Access",
+			"item": [
+				{
+					"name": "Teachers",
+					"item": [
+						{
+							"name": "Teacher Users List",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/teachers",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"teachers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create School Teacher User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstname\": \"صادق\",\n    \"lastname\": \"خوش لهجه\",\n    \"username\": \"sadegh-khosh\",\n    \"email\": \"sadegh-khosh@gmail.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/teachers",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"teachers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Teacher",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/teachers/5",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"teachers",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Principle by User ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles/user/18",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles",
+										"user",
+										"18"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Teacher",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/teachers/20",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"teachers",
+										"20"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Assign Teacher to Classroom",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/teachers/6/assign-classroom/1",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"teachers",
+										"6",
+										"assign-classroom",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Students",
+					"item": [
+						{
+							"name": "Student Users List",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/students",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"students"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Student User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstname\": \"صادق\",\n    \"lastname\": \"خوش لهجه\",\n    \"username\": \"sadegh-khosh\",\n    \"email\": \"sadegh-khosh@gmail.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/students",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"students"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Student",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/students/22",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"students",
+										"22"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Student by User ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/students/user/22",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"students",
+										"user",
+										"22"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Student",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/students/22",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"students",
+										"22"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Assign Student to Classroom",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/students/23/assign-classroom/1",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"students",
+										"23",
+										"assign-classroom",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "School Classroom List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{api_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/schools/1/classrooms",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"schools",
+								"1",
+								"classrooms"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teacher Access",
+			"item": [
+				{
+					"name": "List of students in the classroom",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{api_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/classrooms/1/students",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"classrooms",
+								"1",
+								"students"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api_url",
+			"value": "http://localhost/api/latest"
+		},
+		{
+			"key": "api_token",
+			"value": "1|H0v1PBKshiz7tZJp9gzJBBpSzXwSuqhX9JOnCOH0438d8dbb"
+		}
+	]
+}

@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
  * Attributes:
  * @property int $id
  * @property int $school_id
+ * @property string $name
  * @property int $status
  * @property int $created_by
  * @property int $updated_by
@@ -40,16 +41,16 @@ class StoreRequest extends FormRequest
     {
         return [
             'school_id' => ['required', 'nullable', 'int', 'exists:schools,id'],
-            'name' => ['required', 'string', 'max:150', 'unique:school_classrooms,name'],
+            'name' => ['required', 'string', 'max:50', 'unique:school_classrooms,name'],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)],
         ];
     }
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'status' => $this->status ?? Status::ACTIVE,
-        ]);
+        if (!$this->school_id  && $this?->school) {
+            $this->merge(['school_id' => $this->school]);
+        }
     }
 
     public function messages()
@@ -58,9 +59,9 @@ class StoreRequest extends FormRequest
             'school_id.required' => 'انتخاب مدرسه الزامی است',
             'school_id' => 'مدرسه انتخابی معتبر نیست',
 
-            'name.required' => 'نام مدرسه الزامی است',
-            'name.max' => 'حداکثر تعداد نویسه نام مدرسه ۱۵۰ عدد است',
-            'name.unique' => 'نام مدرسه باید منحصر به فرد باشد',
+            'name.required' => 'نام کلاس الزامی است',
+            'name.max' => 'برای نام کلاس حداکثر ۵۰ نویسه مجاز است',
+            'name.unique' => 'نام کلاس باید منحصر به فرد باشد',
 
             'status' => 'وضعیت ارسال شده نامعتبر است',
         ];

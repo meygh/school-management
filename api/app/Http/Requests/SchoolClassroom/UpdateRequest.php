@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
  * Attributes:
  * @property int $id
  * @property int $school_id
+ * @property string $name
  * @property int $status
  * @property int $created_by
  * @property int $updated_by
@@ -40,16 +41,22 @@ class UpdateRequest extends FormRequest
     {
         return [
             'school_id' => ['sometimes', 'required', 'nullable', 'int', 'exists:schools,id'],
-            'name' => ['required', 'string', 'max:150', 'unique:school_classrooms,name,' . $this->id],
+            'name' => ['required', 'string', 'max:50', 'unique:school_classrooms,name,' . $this->id],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)]
         ];
     }
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'status' => $this->status ?? Status::ACTIVE,
-        ]);
+        if (!$this->school_id  && $this?->school) {
+            $this->merge(['school_id' => $this->school]);
+        }
+
+        if (is_null($this->status)) {
+            $this->merge([
+                'status' => Status::ACTIVE->value,
+            ]);
+        }
     }
 
     public function messages()

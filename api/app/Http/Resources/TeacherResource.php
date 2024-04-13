@@ -28,7 +28,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property ?User $updatedBy
  * @property ?User $deletedBy
  */
-class PrincipleResource extends JsonResource
+class TeacherResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -42,9 +42,10 @@ class PrincipleResource extends JsonResource
             'schoolId' => $this->school_id,
             'name' => $this->user?->fullName,
             'school' => new SchoolResource($this->whenLoaded('school')),
+            'classroom' => new SchoolClassroomResource($this->whenLoaded('classroom')),
             'user' => new UserResource($this->whenLoaded('user')),
             'statusId' => $this->status,
-            'status' => $this->status->label(),
+            'status' => $this->status?->label(),
         ];
     }
 }

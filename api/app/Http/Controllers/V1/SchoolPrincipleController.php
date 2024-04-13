@@ -57,16 +57,16 @@ class SchoolPrincipleController extends BaseController
      *  every school can be assigned only to one principle.
      *
      * @param StoreRequest $request
-     * @param User $user
+     * @param User $userPrinciple
      * @param School $school
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function assignSchool(StoreRequest $request, User $user, School $school)
+    public function assignSchool(StoreRequest $request, User $userPrinciple, School $school)
     {
         $principle = new SchoolPrinciple($request->validated());
 
-        if ($principle->assignSchool()) {
+        if ($principle = $principle->assignSchool()) {
             $principle->loadMissing('school');
 
             return $this->sendResponse(
@@ -76,13 +76,13 @@ class SchoolPrincipleController extends BaseController
             );
         }
 
-        return $this->sendError('تخصیص مدرسه به مدیر مدرسه با خطا مواجه شد!', [], 500);
+        return $this->sendError('تخصیص مدرسه به مدیر با خطا مواجه شد!', [], 500);
     }
 
     /**
      * Display the specified School by the given user id.
      *
-     * @param User $userPrinciple
+     * @param SchoolPrinciple $userPrinciple
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -130,26 +130,15 @@ class SchoolPrincipleController extends BaseController
     /**
      * Remove the specified principle from the current school and disable his account.
      *
-     * @param SchoolPrinciple $principle
+     * @param User $userPrinciple
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function destroy(SchoolPrinciple $principle)
+    public function destroy(User $userPrinciple)
     {
-        if (!$principle) {
-            return $this->sendError('مدیر مدرسه مورد نظر یافت نشد!');
-        }
-
-        DB::beginTransaction();
-        $principle->user->status = UserStatus::INACTIVE;
-
         if ($principle->delete()) {
-            DB::commit();
-
-            return $this->sendResponse(null, 'مدیر شناسه ' . $principle->id . ' حذف شد.', 204);
+            return response()->noContent();
         }
-
-        DB::rollBack();
 
         return $this->sendError('حذف مدیر مدرسه با خطا مواجه شد!', [], 500);
     }

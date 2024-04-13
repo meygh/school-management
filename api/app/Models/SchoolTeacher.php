@@ -7,6 +7,7 @@ use App\Traits\CreatedUpdatedBy;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class SchoolStudent
@@ -34,7 +35,7 @@ class SchoolTeacher extends Model
 {
     use HasFactory, HasTimestamps, CreatedUpdatedBy;
 
-    protected $with = ['school', 'classroom', 'user'];
+//    protected $with = ['school', 'classroom', 'user'];
 
     protected $fillable = ['school_id', 'classroom_id', 'user_id', 'status'];
 
@@ -44,6 +45,59 @@ class SchoolTeacher extends Model
         'deleted_at' => 'datetime',
         'status' => Status::class,
     ];
+
+    /**
+     * Assign pear to pear school classrooms with teachers.
+     * every classroom can be assigned only to one particular teacher.
+     *
+     * @return ?SchoolTeacher
+     */
+    public function assignClassroom(): ?SchoolTeacher
+    {
+        if (!$this->school_id || !$this->classroom_id || !$this->user_id) {
+            return null;
+        }
+
+        /**
+         * Retrieve current teacher for the given classroom.
+         * @var ?SchoolTeacher $teacher
+         */
+        $teacher = self::where([
+            'classroom_id' => $this->classroom_id,
+            'user_id' => $this->user_id,
+        ])->first();
+
+        if ($teacher) {
+            if (!$teacher->isActive()) {
+                $teacher->update(['status' => Status::ACTIVE]);
+            }
+
+            return $teacher;
+        }
+
+        DB::beginTransaction();
+
+        // Detach previous teacher from the classroom
+        self::where(['classroom_id' => $this->classroom_id])->delete();
+
+        // Detach previous classroom of the teacher
+        self::where(['user_id' => $this->user_id])->delete();
+
+        if ($this->save()) {
+            DB::commit();
+
+            return $this;
+        }
+
+        DB::rollBack();
+
+        return null;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status == Status::ACTIVE;
+    }
 
     public function school()
     {

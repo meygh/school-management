@@ -21,6 +21,8 @@ class UserResource extends JsonResource
             'firstName' => $this->firstname,
             'lastName' => $this->lastname,
             'fullName' => "{$this->firstname} {$this->lastname}",
+            'statusId' => $this->status,
+            'status' => $this->status?->label(),
         ];
     }
 }

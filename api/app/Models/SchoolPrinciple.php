@@ -46,13 +46,14 @@ class SchoolPrinciple extends Model
     /**
      * Assign pear to pear school and principle.
      * every school can be assigned only to one principle.
-     * @return SchoolPrinciple|$this|null
+     * @return ?SchoolPrinciple
      */
     public function assignSchool(): ?SchoolPrinciple
     {
         if (!$this->school_id || !$this->user_id) {
             return null;
         }
+
         DB::beginTransaction();
 
         try {
@@ -69,6 +70,11 @@ class SchoolPrinciple extends Model
         DB::rollBack();
 
         return null;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status == Status::ACTIVE;
     }
 
     /**
