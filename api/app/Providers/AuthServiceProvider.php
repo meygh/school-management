@@ -57,6 +57,17 @@ class AuthServiceProvider extends ServiceProvider
         );
 
         Gate::define(
+            'AdminOrPrinciple',
+            function (User $user) use ($deny_access_msg) {
+                if ($user->isAdmin() || $user->isPrinciple()) {
+                    return Response::allow();
+                }
+
+                return Response::deny($deny_access_msg);
+            }
+        );
+
+        Gate::define(
             'principle',
             function (User $user, Model $model = null) use ($deny_access_msg) {
                 if ($user->isPrinciple() && ($principle = $user->principle)) {
@@ -76,54 +87,6 @@ class AuthServiceProvider extends ServiceProvider
             function (User $user, Model $model = null) use ($deny_access_msg) {
                 if ($user->isTeacher() && ($teacher = $user->teacher)) {
                     if ($model?->classroom_id && $model->classroom_id != $teacher->classroom_id) {
-                        return Response::deny($deny_access_msg);
-                    }
-
-                    return Response::allow();
-                }
-
-                return Response::deny($deny_access_msg);
-            }
-        );
-
-        Gate::define(
-            'manage-schools',
-            function (User $user, Model $model = null) use ($deny_access_msg) {
-                if ($user->isAdmin()) {
-                    return Response::allow();
-                }
-
-                return Response::deny($deny_access_msg);
-            }
-        );
-
-        Gate::define(
-            'manage-classroom',
-            function (User $user, Model $model = null) use ($deny_access_msg) {
-                if ($user->isAdmin()) {
-                    return Response::allow();
-                }
-
-                return Response::deny($deny_access_msg);
-            }
-        );
-
-        Gate::define(
-            'manage-principles',
-            function (User $user, Model $model = null) use ($deny_access_msg) {
-                if ($user->isAdmin()) {
-                    return Response::allow();
-                }
-
-                return Response::deny($deny_access_msg);
-            }
-        );
-
-        Gate::define(
-            'manage-teachers',
-            function (User $user, Model $model = null) use ($deny_access_msg) {
-                if ($user->isPrinciple() && ($principle = $user->principle)) {
-                    if ($model?->school_id && $model->school_id != $principle->school_id) {
                         return Response::deny($deny_access_msg);
                     }
 
