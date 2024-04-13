@@ -17,6 +17,33 @@ This is a simple api project to produce some basic facilities to manage a school
 - Dockerized using Docker Compose
 - Project using MySql as a relational database
 
+## Install and Launch
+This project supports Docker, so the only job you should do to launch the project is the following steps:
+
+### Step 1
+```shell
+docker-compose up -d
+```
+
+### Step 2
+```shell
+docker exec -it php-minikala php artisan migrate --seed
+```
+
+Just Finished!
+you can use the PostMan collection json file to work with api.
+
+## User Authenticating:
+- Admin User 
+    - The username and password is `admin`
+- Other users:
+  - For each access level different users are defined; for instance there are `3 Principles`, `3 Teachers` and `5 Students`
+  - The password for all predefined users is: `12345`
+
+## How to manage database
+Docker will run a `phpmyadmin` service that you can access it `http://localhost:8081`
+The `root password` for mysql is `Pass@123`
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
