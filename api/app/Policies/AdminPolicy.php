@@ -24,7 +24,7 @@ class AdminPolicy
 
     protected function isAuthorized(User $user): Response
     {
-        if ($user->isSuperAdmin() || $user->isAdmin()) {
+        if ($user->isAdmin()) {
             return Response::allow();
         }
 

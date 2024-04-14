@@ -203,7 +203,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"مدرسه صادقیه   \",\n    \"zone\": 3\n}",
+									"raw": "{\n    \"name\": \"مدرسه سهیلی\",\n    \"zone\": 3\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -396,7 +396,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"کلاس فوق العاده ۳\"\n}",
+									"raw": "{\n    \"name\": \"آموزش کاربری اینترنت\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -404,13 +404,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{api_url}}/schools/1/classrooms",
+									"raw": "{{api_url}}/schools/2/classrooms",
 									"host": [
 										"{{api_url}}"
 									],
 									"path": [
 										"schools",
-										"1",
+										"2",
 										"classrooms"
 									]
 								}
@@ -418,7 +418,7 @@
 							"response": []
 						},
 						{
-							"name": "Update School",
+							"name": "Update Classroom",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -440,7 +440,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"zone\": 5\n}",
+									"raw": "{\n    \"name\": \"کلاس فوق العاده ریاضی\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -448,20 +448,22 @@
 									}
 								},
 								"url": {
-									"raw": "{{api_url}}/schools/4",
+									"raw": "{{api_url}}/schools/2/classrooms/8",
 									"host": [
 										"{{api_url}}"
 									],
 									"path": [
 										"schools",
-										"4"
+										"2",
+										"classrooms",
+										"8"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Show School",
+							"name": "Show Classroom",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -482,20 +484,22 @@
 									}
 								],
 								"url": {
-									"raw": "{{api_url}}/schools/4",
+									"raw": "{{api_url}}/schools/2/classrooms/8",
 									"host": [
 										"{{api_url}}"
 									],
 									"path": [
 										"schools",
-										"4"
+										"2",
+										"classrooms",
+										"8"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Delete School",
+							"name": "Delete Classroom",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -516,13 +520,15 @@
 									}
 								],
 								"url": {
-									"raw": "{{api_url}}/schools/5",
+									"raw": "{{api_url}}/schools/2/classrooms/8",
 									"host": [
 										"{{api_url}}"
 									],
 									"path": [
 										"schools",
-										"5"
+										"2",
+										"classrooms",
+										"8"
 									]
 								}
 							},
@@ -714,7 +720,7 @@
 							"response": []
 						},
 						{
-							"name": "Delete Principle",
+							"name": "Un-Assign Principle",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -735,13 +741,48 @@
 									}
 								],
 								"url": {
-									"raw": "{{api_url}}/principles/11",
+									"raw": "{{api_url}}/principles/24",
 									"host": [
 										"{{api_url}}"
 									],
 									"path": [
 										"principles",
-										"11"
+										"24"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Principle User Account",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{api_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{api_url}}/principles/user/24",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"principles",
+										"user",
+										"24"
 									]
 								}
 							},

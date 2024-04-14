@@ -44,7 +44,7 @@ class PrincipleResource extends JsonResource
             'school' => new SchoolResource($this->whenLoaded('school')),
             'user' => new UserResource($this->whenLoaded('user')),
             'statusId' => $this->status,
-            'status' => $this->status->label(),
+            'status' => $this->status?->label(),
         ];
     }
 }

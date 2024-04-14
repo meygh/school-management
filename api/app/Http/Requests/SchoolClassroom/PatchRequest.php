@@ -40,18 +40,24 @@ class PatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'school_id' => ['sometimes', 'required', 'nullable', 'int', 'exists:schools,id'],
-            'name' => ['required', 'string', 'max:50', 'unique:school_classrooms,name,' . $this->id],
+//            'school_id' => ['sometimes', 'required', 'nullable', 'int', 'exists:schools,id'],
+            'name' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('school_classrooms')->where(
+                    fn ($query) => (
+                        $query->where('school_id', request()->input('school_id'))
+                            ->where('name', request()->input('name'))
+                    )
+                )->ignore($this->id)
+            ],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)]
         ];
     }
 
     protected function prepareForValidation(): void
     {
-        if (!$this->school_id  && $this?->school) {
-            $this->merge(['school_id' => $this->school]);
-        }
-
         if (is_null($this->status)) {
             $this->merge([
                 'status' => Status::ACTIVE->value,

@@ -3,8 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -49,4 +51,17 @@ class Handler extends ExceptionHandler
             ? response()->json(['message' => $exception->getMessage()], 401)
             : redirect()->guest($exception->redirectTo() ?? route('login'));
     }
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof NotFoundHttpException) {
+            return response()->json(['message' => 'آدرس مورد نظر شما یافت نشد'], 404);
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json(['message' => 'آیتم مورد نظر شما یافت نشد'], 404);
+        }
+
+        return parent::render($request, $e);
+    }
+
 }

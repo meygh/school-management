@@ -41,7 +41,17 @@ class StoreRequest extends FormRequest
     {
         return [
             'school_id' => ['required', 'nullable', 'int', 'exists:schools,id'],
-            'name' => ['required', 'string', 'max:50', 'unique:school_classrooms,name'],
+            'name' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('school_classrooms')->where(
+                    fn ($query) => (
+                        $query->where('school_id', request()->input('school_id'))
+                            ->where('name', request()->input('name'))
+                    )
+                )
+            ],
             'status' => ['sometimes', 'nullable', Rule::enum(Status::class)],
         ];
     }
@@ -49,7 +59,7 @@ class StoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if (!$this->school_id  && $this?->school) {
-            $this->merge(['school_id' => $this->school]);
+            $this->merge(['school_id' => $this->school?->id]);
         }
     }
 

@@ -142,7 +142,7 @@ class User extends Authenticatable
 
     public function principle()
     {
-        return $this->hasOne(SchoolPrinciple::class, 'user_id');
+        return $this->hasOne(SchoolPrinciple::class, 'user_id', 'id');
     }
 
     public function teacher()

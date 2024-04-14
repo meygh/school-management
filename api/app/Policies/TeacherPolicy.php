@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
-class TrusteePolicy
+class TeacherPolicy
 {
     public function create(User $user)
     {
@@ -33,7 +33,7 @@ class TrusteePolicy
 
     protected function isAuthorized(User $user): Response
     {
-        if ($user->isTrustee()) {
+        if ($user->isTeacher()) {
             return Response::allow();
         }
 

@@ -2,6 +2,13 @@
 
 namespace App\Providers;
 
+use App\Exceptions\ClassroomNotFound;
+use App\Exceptions\PrincipleNotFound;
+use App\Exceptions\SchoolNotFound;
+use App\Exceptions\StudentNotFound;
+use App\Exceptions\TeacherNotFound;
+use App\Models\School;
+use App\Models\SchoolClassroom;
 use App\Models\SchoolPrinciple;
 use App\Models\SchoolStudent;
 use App\Models\SchoolTeacher;
@@ -35,6 +42,13 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        $this->bootVersioning();
+
+        $this->bootModelBindings();
+    }
+
+    protected function bootVersioning(): void
+    {
         $this->routes(function () {
             $latest_api_version = config('app.api_latest');
 
@@ -57,20 +71,61 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+    }
 
+    protected function bootModelBindings(): void
+    {
         // Will use to find SchoolPrinciple by user id
         Route::bind('userPrinciple', function ($value) {
-            return User::where('id', $value)->principles()->first();
+            $user = User::where('id', $value)->principles()->first();
+
+            if (!$user) {
+                throw new PrincipleNotFound($value);
+            }
+
+            return $user;
         });
 
         // Will use to find SchoolTeacher by user id
         Route::bind('userTeacher', function ($value) {
-            return User::where('id', $value)->teachers()->first();
+            $user = User::where('id', $value)->teachers()->first();
+
+            if (!$user) {
+                throw new TeacherNotFound($value);
+            }
+
+            return $user;
         });
 
         // Will use to find SchoolStudent by user id
         Route::bind('userStudent', function ($value) {
-            return User::where('id', $value)->students()->first();
+            $user = User::where('id', $value)->students()->first();
+
+            if (!$user) {
+                throw new StudentNotFound($value);
+            }
+
+            return $user;
+        });
+
+        Route::model('school', School::class, function ($id) {
+            throw new SchoolNotFound($id);
+        });
+
+        Route::model('classroom', SchoolClassroom::class, function ($id) {
+            throw new ClassroomNotFound($id);
+        });
+
+        Route::model('principle', SchoolPrinciple::class, function ($id) {
+            throw new PrincipleNotFound($id);
+        });
+
+        Route::model('teacher', SchoolTeacher::class, function ($id) {
+            throw new TeacherNotFound($id);
+        });
+
+        Route::model('student', SchoolStudent::class, function ($id) {
+            throw new StudentNotFound($id);
         });
     }
 }

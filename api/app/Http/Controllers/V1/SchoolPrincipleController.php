@@ -81,14 +81,19 @@ class SchoolPrincipleController extends BaseController
 
     /**
      * Display the specified School by the given user id.
+     * if principle already assigned to a school will return extra details about school.
      *
-     * @param SchoolPrinciple $userPrinciple
+     * @param User $userPrinciple
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function showByUserId(SchoolPrinciple $userPrinciple)
+    public function showByUserId(User $userPrinciple)
     {
-        return $this->sendResponse(new PrincipleResource($userPrinciple));
+        if ($principle = $userPrinciple->principle) {
+            return $this->sendResponse(new PrincipleResource($principle));
+        }
+
+        return $this->sendResponse(new UserResource($userPrinciple));
     }
 
     /**
@@ -130,13 +135,29 @@ class SchoolPrincipleController extends BaseController
     /**
      * Remove the specified principle from the current school and disable his account.
      *
+     * @param SchoolPrinciple $principle
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function destroy(SchoolPrinciple $principle)
+    {
+        if ($principle->delete()) {
+            return response()->noContent();
+        }
+
+        return $this->sendError('حذف مدیر مدرسه با خطا مواجه شد!', [], 500);
+    }
+
+    /**
+     * Remove the specified principle from the current school and disable his account.
+     *
      * @param User $userPrinciple
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function destroy(User $userPrinciple)
+    public function deleteUser(User $userPrinciple)
     {
-        if ($principle->delete()) {
+        if ($userPrinciple->delete()) {
             return response()->noContent();
         }
 

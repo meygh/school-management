@@ -11,7 +11,6 @@ use App\Models\SchoolClassroom;
 use Illuminate\Http\Request;
 use App\Http\Resources\SchoolClassroomResource;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Response;
 
 class SchoolClassroomController extends BaseController
 {
@@ -19,16 +18,13 @@ class SchoolClassroomController extends BaseController
      * Display a listing of the SchoolClassroom.
      *
      * @param Request $request
+     * @param School|null $school
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request, School $school = null)
     {
-        if (!$school) {
-            return $this->sendError('مدرسه مورد نظر یافت نشد!');
-        }
-
-        if (!Gate::allows('school-principle', $school)) {
+        if (!Gate::allows('admin') && !Gate::allows('school-principle', $school)) {
             return $this->sendError('شما اجازه مشاهده کلاس های این مدرسه را ندارید!', [], 403);
         }
 
@@ -39,10 +35,6 @@ class SchoolClassroomController extends BaseController
 
     public function listOfStudents(Request $request, SchoolClassroom $classroom = null)
     {
-        if (!$classroom) {
-            return $this->sendError('کلاس مورد نظر یافت نشد!');
-        }
-
         if (!Gate::allows('owned-classroom', $classroom)) {
             return $this->sendError('شما اجازه مشاهده این کلاس را ندارید!', [], 403);
         }
@@ -56,10 +48,11 @@ class SchoolClassroomController extends BaseController
      * Store a newly SchoolClassroom in storage.
      *
      * @param StoreRequest $request
+     * @param School $school
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, School $school)
     {
         $school = SchoolClassroom::create($request->validated());
 
@@ -73,53 +66,48 @@ class SchoolClassroomController extends BaseController
     /**
      * Display the specified SchoolClassroom.
      *
-     * @param SchoolClassroom $school
+     * @param SchoolClassroom $classroom
      *
-     * @return SchoolClassroomResource
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(SchoolClassroom $school)
+    public function show(School $school, SchoolClassroom $classroom)
     {
-        return new SchoolClassroomResource($school);
+        $classroom->loadMissing('school', 'teacher');
+
+        return $this->sendResponse(new SchoolClassroomResource($classroom));
     }
 
     /**
      * Update the specified SchoolClassroom in storage.
      *
      * @param PatchRequest $request
-     * @param SchoolClassroom $school
+     * @param School $school
+     * @param SchoolClassroom $classroom
      *
      * @return SchoolClassroomResource|\Illuminate\Http\JsonResponse
      */
-    public function update(PatchRequest $request, SchoolClassroom $school = null)
+    public function update(PatchRequest $request, School $school, SchoolClassroom $classroom)
     {
-        if (!$school) {
-            return $this->sendError('مدرسه مورد نظر یافت نشد!');
-        }
-
-        $school->update($request->validated());
+        $classroom->update($request->validated());
 
         return $this->sendResponse(
-            new SchoolClassroomResource($school),
-            "مدرسه {$school->name} با موفقیت ویرایش شد",
-            204
+            new SchoolClassroomResource($classroom),
+            "کلاس '{$classroom->name}' ویرایش شد"
         );
     }
 
     /**
      * Remove the specified SchoolClassroom from storage.
      *
-     * @param SchoolClassroom $school
+     * @param School $school
+     * @param SchoolClassroom $classroom
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function destroy(SchoolClassroom $school)
+    public function destroy(School $school, SchoolClassroom $classroom)
     {
-        if (!$school) {
-            return $this->sendError('مدرسه مورد نظر یافت نشد!');
-        }
-
-        if ($school->delete()) {
-            return $this->sendResponse(null, 'مدرسه ' . $school->name . ' حذف شد.', 204);
+        if ($classroom->delete()) {
+            return $this->sendResponse(null, 'مدرسه ' . $classroom->name . ' حذف شد.', 204);
         }
 
         return $this->sendError('حذف مدرسه با خطا مواجه شد!', [], 500);

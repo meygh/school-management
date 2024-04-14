@@ -16,12 +16,14 @@ use App\Http\Controllers\V1\SchoolController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('can:admin')->group(function () {
         // Assign the principle by user id to the given school id.
-        Route::post('principles/{user}/assign-school/{school}', [SchoolPrincipleController::class, 'assignSchool'])
+        Route::post('principles/{userPrinciple}/assign-school/{school}', [SchoolPrincipleController::class, 'assignSchool'])
             ->name('principle.assignSchool');
 
         // Show principle data base on given user id not principle id.
         Route::get('principles/user/{userPrinciple}', [SchoolPrincipleController::class, 'showByUserId'])
             ->name('principle.showByUser');
+        Route::delete('principles/user/{userPrinciple}', [SchoolPrincipleController::class, 'deleteUser'])
+            ->name('principle.deleteUser');
 
         Route::apiResources([
             'schools' => SchoolController::class,

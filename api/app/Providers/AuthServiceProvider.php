@@ -115,6 +115,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define(
             'owned-classroom',
             function (User $user, SchoolClassroom $classroom = null) use ($deny_access_msg) {
+                if ($user->isAdmin()) {
+                    return Response::allow();
+                }
+                
                 if ($user->isPrinciple() && ($principle = $user->principle)) {
                     if ($classroom && $classroom->school_id != $principle->school_id) {
                         return Response::deny($deny_access_msg);
